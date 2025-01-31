@@ -46,6 +46,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
+
     @PreAuthorize("hasRole('USER')")
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
