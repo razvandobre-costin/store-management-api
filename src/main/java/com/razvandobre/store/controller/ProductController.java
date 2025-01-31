@@ -4,6 +4,7 @@ import com.razvandobre.store.model.Product;
 import com.razvandobre.store.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
@@ -44,7 +46,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
-
+    @PreAuthorize("hasRole('USER')")
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
         return productService.createProduct(product);
