@@ -1,6 +1,7 @@
 package com.razvandobre.store.util;
 
 import com.razvandobre.store.model.Role;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtil {
 
-    private Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    public Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
 
     public String generateToken(String username, Set<Role> roles) {
@@ -33,40 +34,11 @@ public class JwtUtil {
                 .compact();
     }
 
-
-    public String extractUsername(String token) {
+    public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-
-    public List<String> extractRoles(String token) {
-        return (List<String>) Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("roles");
-    }
-
-    public boolean validateToken(String token) {
-        return !isTokenExpired(token);
-    }
-
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
+                .getBody();
     }
 }
